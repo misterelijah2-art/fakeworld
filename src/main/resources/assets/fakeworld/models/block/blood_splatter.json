@@ -1,0 +1,16 @@
+{
+	"textures": {
+		"blood": "fakeworld:block/blood_splatter"
+	},
+	"elements": [
+		{
+			"from": [0.5, 0.04, 0.5],
+			"to": [15.5, 0.05, 15.5],
+			"faces": {
+				"up": {
+					"texture": "#blood"
+				}
+			}
+		}
+	]
+}

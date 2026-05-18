@@ -1,0 +1,46 @@
+{
+	"schemaVersion": 1,
+	"id": "fakeworld",
+	"version": "${version}",
+	"name": "fakeworld",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/fakeworld/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.example.fakeworld.Fakeworld"
+		],
+		"client": [
+			"com.example.fakeworld.client.FakeworldClient"
+		],
+		"modmenu": [
+			"com.example.fakeworld.client.FakeworldModMenu"
+		]
+	},
+	"mixins": [
+		"fakeworld.mixins.json",
+		{
+			"config": "fakeworld.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"cloth-config": "*",
+		"modmenu": "*",
+		"geckolib": "*"
+	}
+}

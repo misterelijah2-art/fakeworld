@@ -1,0 +1,19 @@
+{
+	"variants": {
+		"facing=north": {
+			"model": "fakeworld:block/blood_splatter"
+		},
+		"facing=east": {
+			"model": "fakeworld:block/blood_splatter",
+			"y": 90
+		},
+		"facing=south": {
+			"model": "fakeworld:block/blood_splatter",
+			"y": 180
+		},
+		"facing=west": {
+			"model": "fakeworld:block/blood_splatter",
+			"y": 270
+		}
+	}
+}

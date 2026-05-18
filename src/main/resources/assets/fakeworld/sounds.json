@@ -1,0 +1,20 @@
+{
+	"blood_splatter": {
+		"sounds": [
+			{
+				"type": "event",
+				"name": "minecraft:block.honey_block.slide"
+			}
+		]
+	},
+	"darkness": {
+		"sounds": [
+			"fakeworld:darkness"
+		]
+	},
+	"terror": {
+		"sounds": [
+			"fakeworld:terror"
+		]
+	}
+}
