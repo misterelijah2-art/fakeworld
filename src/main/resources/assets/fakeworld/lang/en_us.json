@@ -2,6 +2,7 @@
 	"entity.fakeworld.hunter": "Hunter",
 	"entity.fakeworld.mimic_villager": "Villager",
 	"entity.fakeworld.stalker": "Stalker",
+	"block.fakeworld.observation_block": "Observation Block",
 	"text.fakeworld.config.title": "Fakeworld Config",
 	"text.fakeworld.config.category.general": "General",
 	"text.fakeworld.config.category.weights": "Event Weights",
