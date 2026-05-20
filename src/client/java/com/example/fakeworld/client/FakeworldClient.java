@@ -1,6 +1,7 @@
 package com.example.fakeworld.client;
 
 import com.example.fakeworld.Fakeworld;
+import com.example.fakeworld.client.mixin.GameRendererInvoker;
 import com.example.fakeworld.client.mixin.PostChainAccessor;
 import com.example.fakeworld.client.mixin.PostPassAccessor;
 import net.fabricmc.api.ClientModInitializer;
@@ -61,7 +62,7 @@ public class FakeworldClient implements ClientModInitializer {
 			if (inFakeOverworld) {
 				if (!shaderLoaded) {
 					try {
-						client.gameRenderer.loadEffect(DARKNESS_SHADER);
+						((GameRendererInvoker) client.gameRenderer).invokeLoadEffect(DARKNESS_SHADER);
 						shaderLoaded = true;
 					} catch (Exception e) {
 						Fakeworld.LOGGER.warn("Failed to load darkness shader", e);

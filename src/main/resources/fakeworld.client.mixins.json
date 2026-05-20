@@ -5,7 +5,8 @@
 	"client": [
 		"FogMixin",
 		"PostChainAccessor",
-		"PostPassAccessor"
+		"PostPassAccessor",
+		"GameRendererInvoker"
 	],
 	"injectors": {
 		"defaultRequire": 1
