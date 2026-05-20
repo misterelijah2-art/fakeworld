@@ -15,13 +15,18 @@ public class FogMixin {
 	private static void injectFakeworldFog(CallbackInfo ci) {
 		if (!FakeworldClient.inFakeOverworld) return;
 
-		// Fog density scales with darkness: darker = thicker fog
+		// Make fog feel closer to vanilla: start farther away and only slightly
+		// tighten based on darkness, without forcing a custom fog color.
 		float darkness = FakeworldClient.currentDarkness;
-		float fogStart = 30.0f - darkness * 20.0f;  // 10-30 blocks
-		float fogEnd   = 80.0f - darkness * 50.0f;  // 30-80 blocks
+
+		// Vanilla-ish base distances; darker caves pull these in a bit.
+		float baseStart = 40.0f;
+		float baseEnd = 160.0f;
+		float fogStart = baseStart - darkness * 10.0f;  // 30–40 blocks
+		float fogEnd   = baseEnd - darkness * 40.0f;    // 120–160 blocks
 
 		RenderSystem.setShaderFogStart(fogStart);
 		RenderSystem.setShaderFogEnd(fogEnd);
-		RenderSystem.setShaderFogColor(0.02f, 0.02f, 0.04f, 1.0f); // near-black dark blue fog
+		// Do not override fog color; let vanilla biome/sky color handle it.
 	}
 }
