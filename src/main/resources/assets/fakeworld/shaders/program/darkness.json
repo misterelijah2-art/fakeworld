@@ -5,7 +5,7 @@
         "dstrgb": "zero"
     },
     "vertex": "blit",
-    "fragment": "fakeworld:darkness",
+    "fragment": "fakeworld:shaders/program/darkness",
     "attributes": [ "Position" ],
     "samplers": [
         { "name": "DiffuseSampler" }
