@@ -48,7 +48,7 @@ public class FakeworldClient implements ClientModInitializer {
 			client.execute(() -> writeDesktopNote(fileName, contents));
 		});
 
-		// Darkness shader that only applies in dark caves in the fake overworld
+		// Darkness shader that only applies in underground caves in the fake overworld
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player == null || client.level == null) {
 				inFakeOverworld = false;
@@ -62,12 +62,16 @@ public class FakeworldClient implements ClientModInitializer {
 
 			inFakeOverworld = client.level.dimension().equals(Fakeworld.FAKE_OVERWORLD);
 
-			// Only enable shader when the player is in a "dark cave": block light <= 3
+			// Only enable shader when the player is in an underground cave:
+			// - fake overworld dimension
+			// - very low block light
+			// - cannot see the sky from this position (prevents surface/night triggering)
 			boolean inDarkCave = false;
 			if (inFakeOverworld) {
 				BlockPos pos = client.player.blockPosition();
 				int blockLight = client.level.getBrightness(LightLayer.BLOCK, pos);
-				inDarkCave = blockLight <= 3;
+				boolean canSeeSky = client.level.canSeeSkyFromBelowWater(pos);
+				inDarkCave = blockLight <= 3 && !canSeeSky;
 			}
 
 			if (inFakeOverworld && inDarkCave) {
