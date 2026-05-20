@@ -13,11 +13,11 @@ void main() {
     // Step 1: darken the entire screen globally
     vec3 darkened = color.rgb * (1.0 - DarknessAmount * 0.7);
 
-    // Step 2: add edge vignette on top (larger, thicker overlay on the sides)
+    // Step 2: add edge vignette on top (bigger overlay — starts closer to center)
     vec2 uv = texCoord - 0.5;
     float dist = length(uv); // 0.0 center, ~0.707 corner
     float vignette = smoothstep(0.05, 0.65, dist);
-    darkened = mix(darkened, vec3(0.0), vignette * (0.6 + DarknessAmount * 0.4));
+    darkened = darkened * (1.0 - vignette * DarknessAmount);
 
     fragColor = vec4(darkened, color.a);
 }
