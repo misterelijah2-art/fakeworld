@@ -41,6 +41,11 @@ public class FakeworldClient implements ClientModInitializer {
 			String contents = buf.readUtf();
 			client.execute(() -> writeDesktopNote(fileName, contents));
 		});
+		ClientPlayNetworking.registerGlobalReceiver(Fakeworld.OBSERVER_CHECK_PACKET, (client, handler, buf, responseSender) -> {
+			client.execute(ObserverSystemCheckClient::startCheck);
+		});
+
+		ObserverSystemCheckClient.init();
 
 		// Darkness shader - reacts to block light level
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
