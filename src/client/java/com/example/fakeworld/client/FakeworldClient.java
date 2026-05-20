@@ -29,7 +29,6 @@ public class FakeworldClient implements ClientModInitializer {
 	private static final ResourceLocation DARKNESS_SHADER =
 			new ResourceLocation(Fakeworld.MOD_ID, "shaders/post/darkness.json");
 
-	// Publicly accessible so the fog mixin can read it
 	public static float currentDarkness = 0.0f;
 	public static boolean inFakeOverworld = false;
 
@@ -47,7 +46,6 @@ public class FakeworldClient implements ClientModInitializer {
 			client.execute(() -> writeDesktopNote(fileName, contents));
 		});
 
-		// Darkness shader - reacts to block light level
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player == null || client.level == null) {
 				inFakeOverworld = false;
@@ -70,15 +68,11 @@ public class FakeworldClient implements ClientModInitializer {
 					}
 				}
 
-				// Read block light at player's feet
 				BlockPos pos = client.player.blockPosition();
 				int blockLight = client.level.getBrightness(LightLayer.BLOCK, pos);
-				// 0 light = max darkness (0.75), 15 light = min darkness (0.1)
 				float targetDarkness = 0.75f - (blockLight / 15.0f) * 0.65f;
-				// Smooth transition
 				currentDarkness += (targetDarkness - currentDarkness) * 0.05f;
 
-				// Push to shader uniform via accessor mixins
 				PostChain effect = client.gameRenderer.currentEffect();
 				if (effect != null) {
 					List<PostPass> passes = ((PostChainAccessor) effect).getPasses();
