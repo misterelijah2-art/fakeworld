@@ -3,7 +3,9 @@
 	"package": "com.example.fakeworld.client.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"FogMixin"
+		"FogMixin",
+		"PostChainAccessor",
+		"PostPassAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

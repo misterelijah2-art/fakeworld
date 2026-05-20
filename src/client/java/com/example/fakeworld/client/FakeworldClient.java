@@ -1,6 +1,8 @@
 package com.example.fakeworld.client;
 
 import com.example.fakeworld.Fakeworld;
+import com.example.fakeworld.client.mixin.PostChainAccessor;
+import com.example.fakeworld.client.mixin.PostPassAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -8,7 +10,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.renderer.PostPass;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LightLayer;
@@ -18,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.List;
 
 public class FakeworldClient implements ClientModInitializer {
 
@@ -73,12 +78,16 @@ public class FakeworldClient implements ClientModInitializer {
 				// Smooth transition
 				currentDarkness += (targetDarkness - currentDarkness) * 0.05f;
 
-				// Push to shader uniform
+				// Push to shader uniform via accessor mixins
 				PostChain effect = client.gameRenderer.currentEffect();
 				if (effect != null) {
-					effect.getPasses().forEach(pass ->
-						pass.getEffect().safeGetUniform("DarknessAmount").set(currentDarkness)
-					);
+					List<PostPass> passes = ((PostChainAccessor) effect).getPasses();
+					for (PostPass pass : passes) {
+						ShaderInstance shader = ((PostPassAccessor) pass).getEffect();
+						if (shader != null && shader.safeGetUniform("DarknessAmount") != null) {
+							shader.safeGetUniform("DarknessAmount").set(currentDarkness);
+						}
+					}
 				}
 			} else if (shaderLoaded) {
 				client.gameRenderer.shutdownEffect();
