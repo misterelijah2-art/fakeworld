@@ -15,7 +15,12 @@ public class FakeworldConfig {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("fakeworld.json");
 
-	public int configVersion = 6;
+	public int configVersion = 7;
+
+	// Set to false to completely disable the fake overworld dimension.
+	// When disabled, world generation behaves as vanilla (e.g. superflat stays superflat).
+	public boolean fakeworldEnabled = true;
+
 	public boolean ambientDirectorEnabled = true;
 	public boolean ambientDebugMessages = false;
 
@@ -124,6 +129,11 @@ public class FakeworldConfig {
 			skyObjectWeight = 24;
 			skyObjectCooldownMinutes = 16;
 			configVersion = 6;
+		}
+		if (configVersion < 7) {
+			// fakeworldEnabled defaults to true for existing configs (preserves old behaviour)
+			fakeworldEnabled = true;
+			configVersion = 7;
 		}
 
 		bleedingTreeChancePercent = clampPercent(bleedingTreeChancePercent);
