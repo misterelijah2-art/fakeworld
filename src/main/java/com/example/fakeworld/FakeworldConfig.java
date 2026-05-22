@@ -131,7 +131,7 @@ public class FakeworldConfig {
 			configVersion = 6;
 		}
 		if (configVersion < 7) {
-			// fakeworldEnabled defaults to true for existing configs (preserves old behaviour)
+			// fakeworldEnabled defaults to true for existing configs
 			fakeworldEnabled = true;
 			configVersion = 7;
 		}
