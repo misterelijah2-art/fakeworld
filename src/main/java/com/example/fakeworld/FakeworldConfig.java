@@ -1,194 +1,128 @@
 package com.example.fakeworld;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Mth;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class FakeworldConfig {
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-	private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("fakeworld.json");
 
-	public int configVersion = 6;
-	public boolean ambientDirectorEnabled = true;
-	public boolean ambientDebugMessages = false;
+    public static final ForgeConfigSpec SPEC;
 
-	public int bleedingTreeChancePercent = 10;
-	public int ambientEventMinDelaySeconds = 45;
-	public int ambientEventMaxDelaySeconds = 140;
-	public int ambientQuietWeight = 160;
+    public static final ForgeConfigSpec.BooleanValue AMBIENT_DIRECTOR_ENABLED;
+    public static final ForgeConfigSpec.BooleanValue AMBIENT_DEBUG_MESSAGES;
 
-	public int belongingMessageWeight = 120;
-	public int fakeAdvancementWeight = 35;
-	public int journalHouseWeight = 30;
-	public int stalkerWeight = 50;
-	public int darknessWeight = 60;
-	public int inventoryShuffleWeight = 40;
-	public int footstepsWeight = 60;
-	public int fakeJoinWeight = 25;
-	public int phantomMiningWeight = 35;
-	public int skyObjectWeight = 24;
-	public int animalAttentionWeight = 50;
-	public int animalDoppelgangerWeight = 30;
-	public int tameDogWeight = 25;
-	public int mimicVillagerWeight = 35;
-	public int creepyVillageWeight = 18;
-	public int abandonedHomeSignWeight = 14;
+    public static final ForgeConfigSpec.IntValue BLEEDING_TREE_CHANCE_PERCENT;
+    public static final ForgeConfigSpec.IntValue AMBIENT_EVENT_MIN_DELAY_SECONDS;
+    public static final ForgeConfigSpec.IntValue AMBIENT_EVENT_MAX_DELAY_SECONDS;
+    public static final ForgeConfigSpec.IntValue AMBIENT_QUIET_WEIGHT;
 
-	public int castleStructureWeight = 10;
-	public int campsiteStructureWeight = 60;
-	public int emptyStructureWeight = 60;
-	public int towerStructureWeight = 100;
+    public static final ForgeConfigSpec.IntValue BELONGING_MESSAGE_WEIGHT;
+    public static final ForgeConfigSpec.IntValue FAKE_ADVANCEMENT_WEIGHT;
+    public static final ForgeConfigSpec.IntValue JOURNAL_HOUSE_WEIGHT;
+    public static final ForgeConfigSpec.IntValue STALKER_WEIGHT;
+    public static final ForgeConfigSpec.IntValue DARKNESS_WEIGHT;
+    public static final ForgeConfigSpec.IntValue INVENTORY_SHUFFLE_WEIGHT;
+    public static final ForgeConfigSpec.IntValue FOOTSTEPS_WEIGHT;
+    public static final ForgeConfigSpec.IntValue FAKE_JOIN_WEIGHT;
+    public static final ForgeConfigSpec.IntValue PHANTOM_MINING_WEIGHT;
+    public static final ForgeConfigSpec.IntValue SKY_OBJECT_WEIGHT;
+    public static final ForgeConfigSpec.IntValue ANIMAL_ATTENTION_WEIGHT;
+    public static final ForgeConfigSpec.IntValue ANIMAL_DOPPELGANGER_WEIGHT;
+    public static final ForgeConfigSpec.IntValue TAME_DOG_WEIGHT;
+    public static final ForgeConfigSpec.IntValue MIMIC_VILLAGER_WEIGHT;
+    public static final ForgeConfigSpec.IntValue CREEPY_VILLAGE_WEIGHT;
+    public static final ForgeConfigSpec.IntValue ABANDONED_HOME_SIGN_WEIGHT;
 
-	public int belongingMessageCooldownMinutes = 20;
-	public int fakeAdvancementCooldownMinutes = 7;
-	public int journalHouseCooldownMinutes = 20;
-	public int stalkerCooldownMinutes = 5;
-	public int darknessCooldownMinutes = 6;
-	public int inventoryShuffleCooldownMinutes = 6;
-	public int footstepsCooldownMinutes = 4;
-	public int fakeJoinCooldownMinutes = 14;
-	public int phantomMiningCooldownMinutes = 8;
-	public int skyObjectCooldownMinutes = 16;
-	public int animalAttentionCooldownMinutes = 5;
-	public int animalDoppelgangerCooldownMinutes = 10;
-	public int tameDogCooldownMinutes = 12;
-	public int mimicVillagerCooldownMinutes = 9;
-	public int creepyVillageCooldownMinutes = 25;
-	public int abandonedHomeSignCooldownMinutes = 12;
+    public static final ForgeConfigSpec.IntValue CASTLE_STRUCTURE_WEIGHT;
+    public static final ForgeConfigSpec.IntValue CAMPSITE_STRUCTURE_WEIGHT;
+    public static final ForgeConfigSpec.IntValue EMPTY_STRUCTURE_WEIGHT;
+    public static final ForgeConfigSpec.IntValue TOWER_STRUCTURE_WEIGHT;
 
-	public int castleStructureCooldownMinutes = 30;
-	public int campsiteStructureCooldownMinutes = 8;
-	public int emptyStructureCooldownMinutes = 8;
-	public int towerStructureCooldownMinutes = 5;
+    public static final ForgeConfigSpec.IntValue BELONGING_MESSAGE_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue FAKE_ADVANCEMENT_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue JOURNAL_HOUSE_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue STALKER_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue DARKNESS_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue INVENTORY_SHUFFLE_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue FOOTSTEPS_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue FAKE_JOIN_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue PHANTOM_MINING_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue SKY_OBJECT_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue ANIMAL_ATTENTION_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue ANIMAL_DOPPELGANGER_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue TAME_DOG_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue MIMIC_VILLAGER_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue CREEPY_VILLAGE_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue ABANDONED_HOME_SIGN_COOLDOWN_MINUTES;
 
-	public static FakeworldConfig load() {
-		if (Files.exists(CONFIG_PATH)) {
-			try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
-				FakeworldConfig config = GSON.fromJson(reader, FakeworldConfig.class);
-				if (config != null) {
-					config.validate();
-					config.save();
-					return config;
-				}
-			} catch (IOException | RuntimeException exception) {
-				Fakeworld.LOGGER.warn("Failed to load fakeworld config; using defaults.", exception);
-			}
-		}
+    public static final ForgeConfigSpec.IntValue CASTLE_STRUCTURE_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue CAMPSITE_STRUCTURE_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue EMPTY_STRUCTURE_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue TOWER_STRUCTURE_COOLDOWN_MINUTES;
 
-		FakeworldConfig config = new FakeworldConfig();
-		config.save();
-		return config;
-	}
+    static {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
-	public void save() {
-		validate();
-		try {
-			Files.createDirectories(CONFIG_PATH.getParent());
-			try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
-				GSON.toJson(this, writer);
-			}
-		} catch (IOException exception) {
-			Fakeworld.LOGGER.warn("Failed to save fakeworld config.", exception);
-		}
-	}
+        builder.comment("General settings").push("general");
+        AMBIENT_DIRECTOR_ENABLED = builder.comment("Enable the ambient event director.").define("ambientDirectorEnabled", true);
+        AMBIENT_DEBUG_MESSAGES   = builder.comment("Show debug messages for ambient events.").define("ambientDebugMessages", false);
+        builder.pop();
 
-	public void validate() {
-		if (configVersion < 2) {
-			tameDogWeight = 25;
-			tameDogCooldownMinutes = 12;
-			configVersion = 2;
-		}
-		if (configVersion < 3) {
-			fakeAdvancementWeight = 35;
-			fakeAdvancementCooldownMinutes = 7;
-			configVersion = 3;
-		}
-		if (configVersion < 4) {
-			fakeJoinWeight = 25;
-			fakeJoinCooldownMinutes = 14;
-			configVersion = 4;
-		}
-		if (configVersion < 5) {
-			phantomMiningWeight = 35;
-			phantomMiningCooldownMinutes = 8;
-			configVersion = 5;
-		}
-		if (configVersion < 6) {
-			skyObjectWeight = 24;
-			skyObjectCooldownMinutes = 16;
-			configVersion = 6;
-		}
+        builder.comment("Timing").push("timing");
+        BLEEDING_TREE_CHANCE_PERCENT      = builder.defineInRange("bleedingTreeChancePercent",      10,   0, 100);
+        AMBIENT_EVENT_MIN_DELAY_SECONDS   = builder.defineInRange("ambientEventMinDelaySeconds",    45,  30, 3600);
+        AMBIENT_EVENT_MAX_DELAY_SECONDS   = builder.defineInRange("ambientEventMaxDelaySeconds",   140,  30, 7200);
+        AMBIENT_QUIET_WEIGHT              = builder.defineInRange("ambientQuietWeight",            160,   0, 300);
+        builder.pop();
 
-		bleedingTreeChancePercent = clampPercent(bleedingTreeChancePercent);
-		ambientEventMinDelaySeconds = Mth.clamp(ambientEventMinDelaySeconds, 30, 3600);
-		ambientEventMaxDelaySeconds = Mth.clamp(ambientEventMaxDelaySeconds, ambientEventMinDelaySeconds, 7200);
-		ambientQuietWeight = clampWeight(ambientQuietWeight);
+        builder.comment("Event weights").push("weights");
+        BELONGING_MESSAGE_WEIGHT     = builder.defineInRange("belongingMessageWeight",    120, 0, 300);
+        FAKE_ADVANCEMENT_WEIGHT      = builder.defineInRange("fakeAdvancementWeight",      35, 0, 300);
+        JOURNAL_HOUSE_WEIGHT         = builder.defineInRange("journalHouseWeight",         30, 0, 300);
+        STALKER_WEIGHT               = builder.defineInRange("stalkerWeight",               50, 0, 300);
+        DARKNESS_WEIGHT              = builder.defineInRange("darknessWeight",              60, 0, 300);
+        INVENTORY_SHUFFLE_WEIGHT     = builder.defineInRange("inventoryShuffleWeight",      40, 0, 300);
+        FOOTSTEPS_WEIGHT             = builder.defineInRange("footstepsWeight",             60, 0, 300);
+        FAKE_JOIN_WEIGHT             = builder.defineInRange("fakeJoinWeight",              25, 0, 300);
+        PHANTOM_MINING_WEIGHT        = builder.defineInRange("phantomMiningWeight",         35, 0, 300);
+        SKY_OBJECT_WEIGHT            = builder.defineInRange("skyObjectWeight",             24, 0, 300);
+        ANIMAL_ATTENTION_WEIGHT      = builder.defineInRange("animalAttentionWeight",       50, 0, 300);
+        ANIMAL_DOPPELGANGER_WEIGHT   = builder.defineInRange("animalDoppelgangerWeight",    30, 0, 300);
+        TAME_DOG_WEIGHT              = builder.defineInRange("tameDogWeight",               25, 0, 300);
+        MIMIC_VILLAGER_WEIGHT        = builder.defineInRange("mimicVillagerWeight",         35, 0, 300);
+        CREEPY_VILLAGE_WEIGHT        = builder.defineInRange("creepyVillageWeight",         18, 0, 300);
+        ABANDONED_HOME_SIGN_WEIGHT   = builder.defineInRange("abandonedHomeSignWeight",     14, 0, 300);
+        CASTLE_STRUCTURE_WEIGHT      = builder.defineInRange("castleStructureWeight",       10, 0, 300);
+        CAMPSITE_STRUCTURE_WEIGHT    = builder.defineInRange("campsiteStructureWeight",     60, 0, 300);
+        EMPTY_STRUCTURE_WEIGHT       = builder.defineInRange("emptyStructureWeight",        60, 0, 300);
+        TOWER_STRUCTURE_WEIGHT       = builder.defineInRange("towerStructureWeight",       100, 0, 300);
+        builder.pop();
 
-		belongingMessageWeight = clampWeight(belongingMessageWeight);
-		fakeAdvancementWeight = clampWeight(fakeAdvancementWeight);
-		journalHouseWeight = clampWeight(journalHouseWeight);
-		stalkerWeight = clampWeight(stalkerWeight);
-		darknessWeight = clampWeight(darknessWeight);
-		inventoryShuffleWeight = clampWeight(inventoryShuffleWeight);
-		footstepsWeight = clampWeight(footstepsWeight);
-		fakeJoinWeight = clampWeight(fakeJoinWeight);
-		phantomMiningWeight = clampWeight(phantomMiningWeight);
-		skyObjectWeight = clampWeight(skyObjectWeight);
-		animalAttentionWeight = clampWeight(animalAttentionWeight);
-		animalDoppelgangerWeight = clampWeight(animalDoppelgangerWeight);
-		tameDogWeight = clampWeight(tameDogWeight);
-		mimicVillagerWeight = clampWeight(mimicVillagerWeight);
-		creepyVillageWeight = clampWeight(creepyVillageWeight);
-		abandonedHomeSignWeight = clampWeight(abandonedHomeSignWeight);
+        builder.comment("Cooldowns (minutes)").push("cooldowns");
+        BELONGING_MESSAGE_COOLDOWN_MINUTES   = builder.defineInRange("belongingMessageCooldownMinutes",   20, 0, 240);
+        FAKE_ADVANCEMENT_COOLDOWN_MINUTES    = builder.defineInRange("fakeAdvancementCooldownMinutes",     7, 0, 240);
+        JOURNAL_HOUSE_COOLDOWN_MINUTES       = builder.defineInRange("journalHouseCooldownMinutes",       20, 0, 240);
+        STALKER_COOLDOWN_MINUTES             = builder.defineInRange("stalkerCooldownMinutes",             5, 0, 240);
+        DARKNESS_COOLDOWN_MINUTES            = builder.defineInRange("darknessCooldownMinutes",            6, 0, 240);
+        INVENTORY_SHUFFLE_COOLDOWN_MINUTES   = builder.defineInRange("inventoryShuffleCooldownMinutes",    6, 0, 240);
+        FOOTSTEPS_COOLDOWN_MINUTES           = builder.defineInRange("footstepsCooldownMinutes",           4, 0, 240);
+        FAKE_JOIN_COOLDOWN_MINUTES           = builder.defineInRange("fakeJoinCooldownMinutes",           14, 0, 240);
+        PHANTOM_MINING_COOLDOWN_MINUTES      = builder.defineInRange("phantomMiningCooldownMinutes",       8, 0, 240);
+        SKY_OBJECT_COOLDOWN_MINUTES          = builder.defineInRange("skyObjectCooldownMinutes",          16, 0, 240);
+        ANIMAL_ATTENTION_COOLDOWN_MINUTES    = builder.defineInRange("animalAttentionCooldownMinutes",     5, 0, 240);
+        ANIMAL_DOPPELGANGER_COOLDOWN_MINUTES = builder.defineInRange("animalDoppelgangerCooldownMinutes", 10, 0, 240);
+        TAME_DOG_COOLDOWN_MINUTES            = builder.defineInRange("tameDogCooldownMinutes",            12, 0, 240);
+        MIMIC_VILLAGER_COOLDOWN_MINUTES      = builder.defineInRange("mimicVillagerCooldownMinutes",       9, 0, 240);
+        CREEPY_VILLAGE_COOLDOWN_MINUTES      = builder.defineInRange("creepyVillageCooldownMinutes",      25, 0, 240);
+        ABANDONED_HOME_SIGN_COOLDOWN_MINUTES = builder.defineInRange("abandonedHomeSignCooldownMinutes",  12, 0, 240);
+        CASTLE_STRUCTURE_COOLDOWN_MINUTES    = builder.defineInRange("castleStructureCooldownMinutes",    30, 0, 240);
+        CAMPSITE_STRUCTURE_COOLDOWN_MINUTES  = builder.defineInRange("campsiteStructureCooldownMinutes",   8, 0, 240);
+        EMPTY_STRUCTURE_COOLDOWN_MINUTES     = builder.defineInRange("emptyStructureCooldownMinutes",      8, 0, 240);
+        TOWER_STRUCTURE_COOLDOWN_MINUTES     = builder.defineInRange("towerStructureCooldownMinutes",      5, 0, 240);
+        builder.pop();
 
-		castleStructureWeight = clampWeight(castleStructureWeight);
-		campsiteStructureWeight = clampWeight(campsiteStructureWeight);
-		emptyStructureWeight = clampWeight(emptyStructureWeight);
-		towerStructureWeight = clampWeight(towerStructureWeight);
+        SPEC = builder.build();
+    }
 
-		belongingMessageCooldownMinutes = clampCooldown(belongingMessageCooldownMinutes);
-		fakeAdvancementCooldownMinutes = clampCooldown(fakeAdvancementCooldownMinutes);
-		journalHouseCooldownMinutes = clampCooldown(journalHouseCooldownMinutes);
-		stalkerCooldownMinutes = clampCooldown(stalkerCooldownMinutes);
-		darknessCooldownMinutes = clampCooldown(darknessCooldownMinutes);
-		inventoryShuffleCooldownMinutes = clampCooldown(inventoryShuffleCooldownMinutes);
-		footstepsCooldownMinutes = clampCooldown(footstepsCooldownMinutes);
-		fakeJoinCooldownMinutes = clampCooldown(fakeJoinCooldownMinutes);
-		phantomMiningCooldownMinutes = clampCooldown(phantomMiningCooldownMinutes);
-		skyObjectCooldownMinutes = clampCooldown(skyObjectCooldownMinutes);
-		animalAttentionCooldownMinutes = clampCooldown(animalAttentionCooldownMinutes);
-		animalDoppelgangerCooldownMinutes = clampCooldown(animalDoppelgangerCooldownMinutes);
-		tameDogCooldownMinutes = clampCooldown(tameDogCooldownMinutes);
-		mimicVillagerCooldownMinutes = clampCooldown(mimicVillagerCooldownMinutes);
-		creepyVillageCooldownMinutes = clampCooldown(creepyVillageCooldownMinutes);
-		abandonedHomeSignCooldownMinutes = clampCooldown(abandonedHomeSignCooldownMinutes);
-
-		castleStructureCooldownMinutes = clampCooldown(castleStructureCooldownMinutes);
-		campsiteStructureCooldownMinutes = clampCooldown(campsiteStructureCooldownMinutes);
-		emptyStructureCooldownMinutes = clampCooldown(emptyStructureCooldownMinutes);
-		towerStructureCooldownMinutes = clampCooldown(towerStructureCooldownMinutes);
-	}
-
-	public int cooldownTicks(int minutes) {
-		return Mth.clamp(minutes, 0, 240) * 60 * 20;
-	}
-
-	private static int clampPercent(int value) {
-		return Mth.clamp(value, 0, 100);
-	}
-
-	private static int clampWeight(int value) {
-		return Mth.clamp(value, 0, 300);
-	}
-
-	private static int clampCooldown(int value) {
-		return Mth.clamp(value, 0, 240);
-	}
+    public static int cooldownTicks(ForgeConfigSpec.IntValue configValue) {
+        return configValue.get() * 60 * 20;
+    }
 }
