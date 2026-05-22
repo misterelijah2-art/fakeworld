@@ -1,19 +1,16 @@
 {
-  "animation": {
-    "format_version": "1.8.0",
-    "animations": {
-      "animation.stalker.idle": {
-        "loop": true,
-        "bones": {
-          "head": {},
-          "body": {},
-          "left_arm": {},
-          "right_arm": {},
-          "left_leg": {},
-          "right_leg": {}
-        }
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.stalker.idle": {
+      "loop": true,
+      "bones": {
+        "head": {},
+        "body": {},
+        "left_arm": {},
+        "right_arm": {},
+        "left_leg": {},
+        "right_leg": {}
       }
     }
   }
 }
-
