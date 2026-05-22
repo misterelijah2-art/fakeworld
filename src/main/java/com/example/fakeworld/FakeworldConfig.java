@@ -132,6 +132,11 @@ public class FakeworldConfig {
 			rareSoundEventCooldownMinutes = 15;
 			configVersion = 7;
 		}
+		if (configVersion < 7) {
+			rareSoundEventWeight = 20;
+			rareSoundEventCooldownMinutes = 15;
+			configVersion = 7;
+		}
 
 		bleedingTreeChancePercent = clampPercent(bleedingTreeChancePercent);
 		ambientEventMinDelaySeconds = Mth.clamp(ambientEventMinDelaySeconds, 30, 3600);
@@ -155,6 +160,7 @@ public class FakeworldConfig {
 		creepyVillageWeight = clampWeight(creepyVillageWeight);
 		abandonedHomeSignWeight = clampWeight(abandonedHomeSignWeight);
 		rareSoundEventWeight = clampWeight(rareSoundEventWeight);
+		rareSoundEventWeight = clampWeight(rareSoundEventWeight);
 
 		castleStructureWeight = clampWeight(castleStructureWeight);
 		campsiteStructureWeight = clampWeight(campsiteStructureWeight);
@@ -177,6 +183,7 @@ public class FakeworldConfig {
 		mimicVillagerCooldownMinutes = clampCooldown(mimicVillagerCooldownMinutes);
 		creepyVillageCooldownMinutes = clampCooldown(creepyVillageCooldownMinutes);
 		abandonedHomeSignCooldownMinutes = clampCooldown(abandonedHomeSignCooldownMinutes);
+		rareSoundEventCooldownMinutes = clampCooldown(rareSoundEventCooldownMinutes);
 		rareSoundEventCooldownMinutes = clampCooldown(rareSoundEventCooldownMinutes);
 
 		castleStructureCooldownMinutes = clampCooldown(castleStructureCooldownMinutes);
