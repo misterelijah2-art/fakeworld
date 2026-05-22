@@ -15,7 +15,7 @@ public class FakeworldConfig {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("fakeworld.json");
 
-	public int configVersion = 6;
+	public int configVersion = 7;
 	public boolean ambientDirectorEnabled = true;
 	public boolean ambientDebugMessages = false;
 
@@ -40,6 +40,7 @@ public class FakeworldConfig {
 	public int mimicVillagerWeight = 35;
 	public int creepyVillageWeight = 18;
 	public int abandonedHomeSignWeight = 14;
+	public int rareSoundEventWeight = 20;
 
 	public int castleStructureWeight = 10;
 	public int campsiteStructureWeight = 60;
@@ -62,6 +63,7 @@ public class FakeworldConfig {
 	public int mimicVillagerCooldownMinutes = 9;
 	public int creepyVillageCooldownMinutes = 25;
 	public int abandonedHomeSignCooldownMinutes = 12;
+	public int rareSoundEventCooldownMinutes = 15;
 
 	public int castleStructureCooldownMinutes = 30;
 	public int campsiteStructureCooldownMinutes = 8;
@@ -125,6 +127,11 @@ public class FakeworldConfig {
 			skyObjectCooldownMinutes = 16;
 			configVersion = 6;
 		}
+		if (configVersion < 7) {
+			rareSoundEventWeight = 20;
+			rareSoundEventCooldownMinutes = 15;
+			configVersion = 7;
+		}
 
 		bleedingTreeChancePercent = clampPercent(bleedingTreeChancePercent);
 		ambientEventMinDelaySeconds = Mth.clamp(ambientEventMinDelaySeconds, 30, 3600);
@@ -147,6 +154,7 @@ public class FakeworldConfig {
 		mimicVillagerWeight = clampWeight(mimicVillagerWeight);
 		creepyVillageWeight = clampWeight(creepyVillageWeight);
 		abandonedHomeSignWeight = clampWeight(abandonedHomeSignWeight);
+		rareSoundEventWeight = clampWeight(rareSoundEventWeight);
 
 		castleStructureWeight = clampWeight(castleStructureWeight);
 		campsiteStructureWeight = clampWeight(campsiteStructureWeight);
@@ -169,6 +177,7 @@ public class FakeworldConfig {
 		mimicVillagerCooldownMinutes = clampCooldown(mimicVillagerCooldownMinutes);
 		creepyVillageCooldownMinutes = clampCooldown(creepyVillageCooldownMinutes);
 		abandonedHomeSignCooldownMinutes = clampCooldown(abandonedHomeSignCooldownMinutes);
+		rareSoundEventCooldownMinutes = clampCooldown(rareSoundEventCooldownMinutes);
 
 		castleStructureCooldownMinutes = clampCooldown(castleStructureCooldownMinutes);
 		campsiteStructureCooldownMinutes = clampCooldown(campsiteStructureCooldownMinutes);

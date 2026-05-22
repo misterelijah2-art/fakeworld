@@ -16,5 +16,10 @@
 		"sounds": [
 			"fakeworld:terror"
 		]
+	},
+	"rare_sound_event": {
+		"sounds": [
+			"fakeworld:rare_sound_event"
+		]
 	}
 }
