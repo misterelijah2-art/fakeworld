@@ -5,10 +5,9 @@ import net.fabricmc.api.Environment;
 
 /**
  * ModMenu integration stub.
- * If you use ModMenu + Cloth Config for a settings screen,
- * implement com.terraformersmc.modmenu.api.ModMenuApi here.
+ * Implement com.terraformersmc.modmenu.api.ModMenuApi here when needed.
  */
 @Environment(EnvType.CLIENT)
 public class FakeworldModMenu {
-    // Intentionally empty — add ModMenuApi implementation when needed.
+    // Intentionally empty - add ModMenuApi implementation when needed.
 }
