@@ -176,11 +176,6 @@ public class Fakeworld implements ModInitializer {
 			new ResourceLocation(MOD_ID, "terror"),
 			SoundEvent.createVariableRangeEvent(new ResourceLocation(MOD_ID, "terror"))
 	);
-	public static final SoundEvent RARE_SOUND_EVENT = Registry.register(
-			BuiltInRegistries.SOUND_EVENT,
-			new ResourceLocation(MOD_ID, "rare_sound_event"),
-			SoundEvent.createVariableRangeEvent(new ResourceLocation(MOD_ID, "rare_sound_event"))
-	);
 	private static final int AMBIENT_EVENT_FAILED_PICK_RETRIES = 3;
 	private static final int ABANDONED_HOME_SIGN_MAX_EVENTS = 3;
 	private static final int DARKNESS_MAX_AMBIENT_EVENTS = 5;
@@ -250,8 +245,6 @@ public class Fakeworld implements ModInitializer {
 	private static final int HUNTER_WARNING_TICKS = 3 * 20;
 	private static final int FAKE_SLEEP_GRACE_TICKS = 20;
 	private static final String TAME_DOG_TAG = "FakeworldSittingDog";
-	private static final String RARE_SOUND_MESSAGE = "A rare sound played.";
-	private static final String RARE_SOUND_MESSAGE = "A rare sound played.";
 	private static final String[] STALKER_SIGN_MESSAGES = {
 			"YOU LEFT THEM",
 			"WE STAYED FOREVER",
@@ -316,8 +309,6 @@ public class Fakeworld implements ModInitializer {
 	private static final SimpleCommandExceptionType FAKEMIMIC_NEEDS_FAKE_OVERWORLD = new SimpleCommandExceptionType(Component.literal("/fakemimic only works in the fake overworld."));
 	private static final SimpleCommandExceptionType FAKEMIMIC_NEEDS_REPAIRED_VILLAGE = new SimpleCommandExceptionType(Component.literal("The mimic only appears after the village is restored."));
 	private static final SimpleCommandExceptionType FAKEMIMIC_NO_POSITION = new SimpleCommandExceptionType(Component.literal("Could not find a valid mimic position."));
-	private static final SimpleCommandExceptionType FAKERARE_NEEDS_PLAYER = new SimpleCommandExceptionType(Component.literal("/fakerareevent must be run by a player."));
-	private static final SimpleCommandExceptionType FAKERARE_NEEDS_FAKE_OVERWORLD = new SimpleCommandExceptionType(Component.literal("/fakerareevent only works in the fake overworld."));
 	private static final Set<UUID> FORCED_BLEEDING_TREE_BREAKS = new HashSet<>();
 	private static final Map<ScheduledBloodSplatter, Integer> BLOOD_SPLATTER_EXPIRATIONS = new HashMap<>();
 	private static final List<ScheduledFootsteps> SCHEDULED_FOOTSTEPS = new ArrayList<>();
@@ -462,8 +453,6 @@ public class Fakeworld implements ModInitializer {
 							.executes(context -> CreepyVillageManager.runTestCommand(context.getSource()))));
 			dispatcher.register(Commands.literal("fakephase")
 					.executes(context -> runFakePhaseCommand(context.getSource())));
-			dispatcher.register(Commands.literal("fakerareevent")
-					.executes(context -> runFakeRareEventCommand(context.getSource())));
 		});
 
 		LOGGER.info("Fake overworld is enabled.");
@@ -778,38 +767,6 @@ public class Fakeworld implements ModInitializer {
 				+ " score " + saveData.getDirectorScore()
 				+ " mood " + saveData.getDirectorMood().name().toLowerCase()
 				+ " pressure " + saveData.getDirectorPressure()), false);
-		return 1;
-	}
-
-	private static int runFakeRareEventCommand(CommandSourceStack source) throws CommandSyntaxException {
-		ServerLevel world = source.getLevel();
-		ServerPlayer player = source.getPlayer();
-		if (player == null) {
-			throw FAKERARE_NEEDS_PLAYER.create();
-		}
-
-		if (!world.dimension().equals(FAKE_OVERWORLD)) {
-			throw FAKERARE_NEEDS_FAKE_OVERWORLD.create();
-		}
-
-		triggerRareSoundEvent(player);
-		source.sendSuccess(() -> Component.literal("Triggered rare sound event."), false);
-		return 1;
-	}
-
-	private static int runFakeRareEventCommand(CommandSourceStack source) throws CommandSyntaxException {
-		ServerLevel world = source.getLevel();
-		ServerPlayer player = source.getPlayer();
-		if (player == null) {
-			throw FAKERARE_NEEDS_PLAYER.create();
-		}
-
-		if (!world.dimension().equals(FAKE_OVERWORLD)) {
-			throw FAKERARE_NEEDS_FAKE_OVERWORLD.create();
-		}
-
-		triggerRareSoundEvent(player);
-		source.sendSuccess(() -> Component.literal("Triggered rare sound event."), false);
 		return 1;
 	}
 
@@ -1647,14 +1604,6 @@ public class Fakeworld implements ModInitializer {
 			}));
 		}
 
-		if (canQueueAmbientEvent(saveData, "rare_sound_event", 0)) {
-			candidates.add(new AmbientEventCandidate("rare_sound_event", eventWeight(saveData, mood, "rare_sound_event", CONFIG.rareSoundEventWeight, 0), cooldownTicks(CONFIG.rareSoundEventCooldownMinutes), 1, () -> {
-				ServerPlayer target = randomPlayer(fakeWorldPlayers, fakeOverworld);
-				triggerRareSoundEvent(target);
-				return true;
-			}));
-		}
-
 		pickAndRunAmbientEvent(fakeOverworld, saveData, mood, candidates);
 	}
 
@@ -2208,22 +2157,6 @@ public class Fakeworld implements ModInitializer {
 		FakeworldSaveData saveData = getSaveData(player.server);
 		saveData.recordDirectorEvent("sky_object_seen", 1);
 		saveData.addDirectorPressure(SKY_OBJECT_DIRECTOR_PRESSURE_GAIN);
-	}
-
-	private static void triggerRareSoundEvent(ServerPlayer player) {
-		playAttachedSound(player, RARE_SOUND_EVENT, SoundSource.AMBIENT, 1.0F, 1.0F);
-		player.displayClientMessage(Component.literal(RARE_SOUND_MESSAGE), true);
-
-		FakeworldSaveData saveData = getSaveData(player.server);
-		saveData.recordDirectorEvent("rare_sound_event", 1);
-	}
-
-	private static void triggerRareSoundEvent(ServerPlayer player) {
-		playAttachedSound(player, RARE_SOUND_EVENT, SoundSource.AMBIENT, 1.0F, 1.0F);
-		player.displayClientMessage(Component.literal(RARE_SOUND_MESSAGE), true);
-
-		FakeworldSaveData saveData = getSaveData(player.server);
-		saveData.recordDirectorEvent("rare_sound_event", 1);
 	}
 
 	private static void stopSkyObjectSound(ServerPlayer player) {
@@ -3657,200 +3590,6 @@ public class Fakeworld implements ModInitializer {
 				return inventoryShuffle;
 			}
 			return 100;
-		}
-
-		static DirectorMood fromName(String name) {
-			for (DirectorMood mood : values()) {
-				if (mood.name().equals(name)) {
-					return mood;
-				}
-			}
-			return QUIET;
-		}
-	}
-
-	private static int quietWeightPercentForEvent(String eventKey, int belonging, int journalHouse, int structure, int stalker, int darkness, int footsteps,
-			int phantomMining, int skyObject, int animalAttention, int animalDoppelganger, int mimicVillager, int inventoryShuffle, int rareSoundEvent) {
-		if (eventKey.equals("belonging")) {
-			return belonging;
-		}
-		if (eventKey.equals("journal_house")) {
-			return journalHouse;
-		}
-		if (eventKey.startsWith("structure_")) {
-			return structure;
-		}
-		if (eventKey.equals("stalker")) {
-			return stalker;
-		}
-		if (eventKey.equals("darkness")) {
-			return darkness;
-		}
-		if (eventKey.equals("footsteps")) {
-			return footsteps;
-		}
-		if (eventKey.equals("phantom_mining")) {
-			return phantomMining;
-		}
-		if (eventKey.equals("sky_object")) {
-			return skyObject;
-		}
-		if (eventKey.equals("animal_attention")) {
-			return animalAttention;
-		}
-		if (eventKey.equals("animal_doppelganger")) {
-			return animalDoppelganger;
-		}
-		if (eventKey.equals("mimic_villager")) {
-			return mimicVillager;
-		}
-		if (eventKey.equals("inventory_shuffle")) {
-			return inventoryShuffle;
-		}
-		if (eventKey.equals("rare_sound_event")) {
-			return rareSoundEvent;
-		}
-		return 100;
-	}
-
-	private enum DirectorMood {
-		QUIET(140, 220),
-		WATCHING(105, 100),
-		STALKING(80, 55),
-		PUNISHING(70, 35),
-		AFTERMATH(155, 260);
-
-		private final int delayPercent;
-		private final int quietWeightPercent;
-
-		DirectorMood(int delayPercent, int quietWeightPercent) {
-			this.delayPercent = delayPercent;
-			this.quietWeightPercent = quietWeightPercent;
-		}
-
-		int delayPercent() {
-			return this.delayPercent;
-		}
-
-		int quietWeightPercent() {
-			return this.quietWeightPercent;
-		}
-
-		int weightPercent(String eventKey) {
-			if (eventKey.equals("creepy_village")) {
-				return switch (this) {
-					case QUIET -> 0;
-					case WATCHING -> 5;
-					case STALKING -> 20;
-					case PUNISHING -> 180;
-					case AFTERMATH -> 120;
-				};
-			}
-
-			return switch (this) {
-				case QUIET -> Fakeworld.quietWeightPercentForEvent(eventKey, 70, 70, 55, 65, 45, 80, 85, 35, 45, 35, 25, 60, 20);
-				case WATCHING -> Fakeworld.quietWeightPercentForEvent(eventKey, 120, 105, 115, 115, 95, 160, 130, 150, 145, 75, 50, 110, 40);
-				case STALKING -> Fakeworld.quietWeightPercentForEvent(eventKey, 75, 60, 95, 170, 135, 175, 165, 95, 110, 115, 90, 85, 60);
-				case PUNISHING -> Fakeworld.quietWeightPercentForEvent(eventKey, 45, 35, 45, 120, 140, 65, 155, 80, 80, 175, 185, 40, 80);
-				case AFTERMATH -> Fakeworld.quietWeightPercentForEvent(eventKey, 55, 45, 70, 40, 35, 95, 55, 120, 55, 40, 25, 70, 30);
-			};
-		}
-
-		static DirectorMood fromName(String name) {
-			for (DirectorMood mood : values()) {
-				if (mood.name().equals(name)) {
-					return mood;
-				}
-			}
-			return QUIET;
-		}
-	}
-
-	private static int quietWeightPercentForEvent(String eventKey, int belonging, int journalHouse, int structure, int stalker, int darkness, int footsteps,
-			int phantomMining, int skyObject, int animalAttention, int animalDoppelganger, int mimicVillager, int inventoryShuffle, int rareSoundEvent) {
-		if (eventKey.equals("belonging")) {
-			return belonging;
-		}
-		if (eventKey.equals("journal_house")) {
-			return journalHouse;
-		}
-		if (eventKey.startsWith("structure_")) {
-			return structure;
-		}
-		if (eventKey.equals("stalker")) {
-			return stalker;
-		}
-		if (eventKey.equals("darkness")) {
-			return darkness;
-		}
-		if (eventKey.equals("footsteps")) {
-			return footsteps;
-		}
-		if (eventKey.equals("phantom_mining")) {
-			return phantomMining;
-		}
-		if (eventKey.equals("sky_object")) {
-			return skyObject;
-		}
-		if (eventKey.equals("animal_attention")) {
-			return animalAttention;
-		}
-		if (eventKey.equals("animal_doppelganger")) {
-			return animalDoppelganger;
-		}
-		if (eventKey.equals("mimic_villager")) {
-			return mimicVillager;
-		}
-		if (eventKey.equals("inventory_shuffle")) {
-			return inventoryShuffle;
-		}
-		if (eventKey.equals("rare_sound_event")) {
-			return rareSoundEvent;
-		}
-		return 100;
-	}
-
-	private enum DirectorMood {
-		QUIET(140, 220),
-		WATCHING(105, 100),
-		STALKING(80, 55),
-		PUNISHING(70, 35),
-		AFTERMATH(155, 260);
-
-		private final int delayPercent;
-		private final int quietWeightPercent;
-
-		DirectorMood(int delayPercent, int quietWeightPercent) {
-			this.delayPercent = delayPercent;
-			this.quietWeightPercent = quietWeightPercent;
-		}
-
-		int delayPercent() {
-			return this.delayPercent;
-		}
-
-		int quietWeightPercent() {
-			return this.quietWeightPercent;
-		}
-
-		int weightPercent(String eventKey) {
-			if (eventKey.equals("creepy_village")) {
-				return switch (this) {
-					case QUIET -> 0;
-					case WATCHING -> 5;
-					case STALKING -> 20;
-					case PUNISHING -> 180;
-					case AFTERMATH -> 120;
-				};
-			}
-
-			return switch (this) {
-				case QUIET -> Fakeworld.quietWeightPercentForEvent(eventKey, 70, 70, 55, 65, 45, 80, 85, 35, 45, 35, 25, 60, 20);
-				case WATCHING -> Fakeworld.quietWeightPercentForEvent(eventKey, 120, 105, 115, 115, 95, 160, 130, 150, 145, 75, 50, 110, 40);
-				case STALKING -> Fakeworld.quietWeightPercentForEvent(eventKey, 75, 60, 95, 170, 135, 175, 165, 95, 110, 115, 90, 85, 60);
-				case PUNISHING -> Fakeworld.quietWeightPercentForEvent(eventKey, 45, 35, 45, 120, 140, 65, 155, 80, 80, 175, 185, 40, 80);
-				case AFTERMATH -> Fakeworld.quietWeightPercentForEvent(eventKey, 55, 45, 70, 40, 35, 95, 55, 120, 55, 40, 25, 70, 30);
-			};
 		}
 
 		static DirectorMood fromName(String name) {
