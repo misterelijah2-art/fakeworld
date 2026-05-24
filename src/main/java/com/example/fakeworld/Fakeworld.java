@@ -176,12 +176,20 @@ public class Fakeworld implements ModInitializer {
 			new ResourceLocation(MOD_ID, "terror"),
 			SoundEvent.createVariableRangeEvent(new ResourceLocation(MOD_ID, "terror"))
 	);
+
+	public static final SoundEvent SOUNDEVENT_SOUND = Registry.register(
+			BuiltInRegistries.SOUND_EVENT,
+			new ResourceLocation(MOD_ID, "soundevent"),
+			SoundEvent.createVariableRangeEvent(new ResourceLocation(MOD_ID, "soundevent"))
+	);
+
 	private static final int AMBIENT_EVENT_FAILED_PICK_RETRIES = 3;
 	private static final int ABANDONED_HOME_SIGN_MAX_EVENTS = 3;
 	private static final int DARKNESS_MAX_AMBIENT_EVENTS = 5;
 	private static final int FAKE_JOIN_MAX_AMBIENT_EVENTS = 2;
 	private static final int PHANTOM_MINING_MAX_AMBIENT_EVENTS = 3;
 	private static final int SKY_OBJECT_MAX_AMBIENT_EVENTS = 2;
+	private static final int SOUNDEVENT_MAX_AMBIENT_EVENTS = 2;
 	private static final int STRUCTURE_REPAIR_START_DELAY_TICKS = 45 * 20;
 	private static final int STRUCTURE_REPAIR_INTERVAL_TICKS = 20;
 	private static final int STRUCTURE_REPAIR_PLAYER_RADIUS = 96;
@@ -309,6 +317,10 @@ public class Fakeworld implements ModInitializer {
 	private static final SimpleCommandExceptionType FAKEMIMIC_NEEDS_FAKE_OVERWORLD = new SimpleCommandExceptionType(Component.literal("/fakemimic only works in the fake overworld."));
 	private static final SimpleCommandExceptionType FAKEMIMIC_NEEDS_REPAIRED_VILLAGE = new SimpleCommandExceptionType(Component.literal("The mimic only appears after the village is restored."));
 	private static final SimpleCommandExceptionType FAKEMIMIC_NO_POSITION = new SimpleCommandExceptionType(Component.literal("Could not find a valid mimic position."));
+	private static final SimpleCommandExceptionType FAKESOUNDEVENT_NEEDS_PLAYER =
+			new SimpleCommandExceptionType(Component.literal("fakesoundevent must be run by a player."));
+	private static final SimpleCommandExceptionType FAKESOUNDEVENT_NEEDS_FAKE_OVERWORLD =
+			new SimpleCommandExceptionType(Component.literal("fakesoundevent only works in the fake overworld."));
 	private static final Set<UUID> FORCED_BLEEDING_TREE_BREAKS = new HashSet<>();
 	private static final Map<ScheduledBloodSplatter, Integer> BLOOD_SPLATTER_EXPIRATIONS = new HashMap<>();
 	private static final List<ScheduledFootsteps> SCHEDULED_FOOTSTEPS = new ArrayList<>();
@@ -453,6 +465,8 @@ public class Fakeworld implements ModInitializer {
 							.executes(context -> CreepyVillageManager.runTestCommand(context.getSource()))));
 			dispatcher.register(Commands.literal("fakephase")
 					.executes(context -> runFakePhaseCommand(context.getSource())));
+			dispatcher.register(Commands.literal("fakesoundevent")
+					.executes(context -> runFakeSoundEventCommand(context.getSource())));
 		});
 
 		LOGGER.info("Fake overworld is enabled.");
@@ -760,7 +774,14 @@ public class Fakeworld implements ModInitializer {
 		source.sendSuccess(() -> Component.literal(force ? "Forced mimic spawn." : "A mimic has appeared nearby."), false);
 		return 1;
 	}
-
+	private static int runFakeSoundEventCommand(CommandSourceStack source) throws CommandSyntaxException {
+		ServerLevel world = source.getLevel();
+		ServerPlayer player = source.getPlayerOrException();
+		if (!world.dimension().equals(FAKE_OVERWORLD)) throw FAKESOUNDEVENT_NEEDS_FAKE_OVERWORLD.create();
+		triggerSoundEvent(player);
+		source.sendSuccess(() -> Component.literal("Triggered sound event."), false);
+		return 1;
+	}
 	private static int runFakePhaseCommand(CommandSourceStack source) {
 		FakeworldSaveData saveData = getSaveData(source.getServer());
 		source.sendSuccess(() -> Component.literal("Fakeworld phase " + saveData.getDirectorPhase()
@@ -1491,10 +1512,31 @@ public class Fakeworld implements ModInitializer {
 				&& darknessTarget != null
 				&& saveData.getDirectorEventCount("darkness") < DARKNESS_MAX_AMBIENT_EVENTS
 				&& canQueueAmbientEvent(saveData, "darkness", 1)) {
-			candidates.add(new AmbientEventCandidate("darkness", eventWeight(saveData, mood, "darkness", CONFIG.darknessWeight, 1), cooldownTicks(CONFIG.darknessCooldownMinutes), 1, () -> {
-					triggerDarknessEvent(darknessTarget);
-					return true;
-				}));
+			candidates.add(new AmbientEventCandidate(
+					"darkness",
+					eventWeight(saveData, mood, "darkness", CONFIG.darknessWeight, 1),
+					cooldownTicks(CONFIG.darknessCooldownMinutes),
+					1,
+					() -> {
+						triggerDarknessEvent(darknessTarget);
+						return true;
+					}
+			));
+		}
+
+		if (saveData.getDirectorPhase() >= 1
+				&& saveData.getDirectorEventCount("soundevent") < SOUNDEVENT_MAX_AMBIENT_EVENTS
+				&& canQueueAmbientEvent(saveData, "soundevent", 1)) {
+			candidates.add(new AmbientEventCandidate(
+					"soundevent",
+					eventWeight(saveData, mood, "soundevent", CONFIG.soundeventWeight, 1),
+					cooldownTicks(CONFIG.soundeventCooldownMinutes),
+					1,
+					() -> {
+						triggerSoundEvent(randomPlayer(fakeWorldPlayers, fakeOverworld));
+						return true;
+					}
+			));
 		}
 
 		if (saveData.getDirectorPhase() >= 2
@@ -1793,7 +1835,9 @@ public class Fakeworld implements ModInitializer {
 		double maxDistance = radius + 36.0D;
 		return player.blockPosition().distSqr(center) <= maxDistance * maxDistance;
 	}
-
+	private static void triggerSoundEvent(ServerPlayer player) {
+		playAttachedSound(player, SOUNDEVENT_SOUND, SoundSource.AMBIENT, 1.0F, 1.0F);
+	}
 	private static void triggerDarknessEvent(ServerPlayer player) {
 		player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, DARKNESS_DURATION_TICKS, 0, false, false, true));
 		player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, DARKNESS_DURATION_TICKS, 0, false, false, true));

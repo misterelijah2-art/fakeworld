@@ -19,8 +19,10 @@
 	},
 	"soundevent": {
 		"sounds": [
-			"fakeworld:soundevent"
-		],
-		"category": "ambient"
+			{
+				"name": "fakeworld:soundevent",
+				"stream": true
+			}
+		]
 	}
 }
