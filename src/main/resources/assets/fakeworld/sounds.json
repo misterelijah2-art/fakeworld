@@ -16,5 +16,11 @@
 		"sounds": [
 			"fakeworld:terror"
 		]
+	},
+	"soundevent": {
+		"sounds": [
+			"fakeworld:soundevent"
+		],
+		"category": "ambient"
 	}
 }

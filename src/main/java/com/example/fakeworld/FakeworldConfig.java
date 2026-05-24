@@ -30,6 +30,7 @@ public class FakeworldConfig {
     public static final ForgeConfigSpec.IntValue MIMIC_VILLAGER_WEIGHT;
     public static final ForgeConfigSpec.IntValue CREEPY_VILLAGE_WEIGHT;
     public static final ForgeConfigSpec.IntValue ABANDONED_HOME_SIGN_WEIGHT;
+    public static final ForgeConfigSpec.IntValue SOUNDEVENT_WEIGHT;
 
     public static final ForgeConfigSpec.IntValue CASTLE_STRUCTURE_WEIGHT;
     public static final ForgeConfigSpec.IntValue CAMPSITE_STRUCTURE_WEIGHT;
@@ -52,6 +53,7 @@ public class FakeworldConfig {
     public static final ForgeConfigSpec.IntValue MIMIC_VILLAGER_COOLDOWN_MINUTES;
     public static final ForgeConfigSpec.IntValue CREEPY_VILLAGE_COOLDOWN_MINUTES;
     public static final ForgeConfigSpec.IntValue ABANDONED_HOME_SIGN_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue SOUNDEVENT_COOLDOWN_MINUTES;
 
     public static final ForgeConfigSpec.IntValue CASTLE_STRUCTURE_COOLDOWN_MINUTES;
     public static final ForgeConfigSpec.IntValue CAMPSITE_STRUCTURE_COOLDOWN_MINUTES;
@@ -90,6 +92,7 @@ public class FakeworldConfig {
         MIMIC_VILLAGER_WEIGHT        = builder.defineInRange("mimicVillagerWeight",         35, 0, 300);
         CREEPY_VILLAGE_WEIGHT        = builder.defineInRange("creepyVillageWeight",         18, 0, 300);
         ABANDONED_HOME_SIGN_WEIGHT   = builder.defineInRange("abandonedHomeSignWeight",     14, 0, 300);
+        SOUNDEVENT_WEIGHT            = builder.defineInRange("soundeventWeight",            15,  0, 300);
         CASTLE_STRUCTURE_WEIGHT      = builder.defineInRange("castleStructureWeight",       10, 0, 300);
         CAMPSITE_STRUCTURE_WEIGHT    = builder.defineInRange("campsiteStructureWeight",     60, 0, 300);
         EMPTY_STRUCTURE_WEIGHT       = builder.defineInRange("emptyStructureWeight",        60, 0, 300);
@@ -113,6 +116,7 @@ public class FakeworldConfig {
         MIMIC_VILLAGER_COOLDOWN_MINUTES      = builder.defineInRange("mimicVillagerCooldownMinutes",       9, 0, 240);
         CREEPY_VILLAGE_COOLDOWN_MINUTES      = builder.defineInRange("creepyVillageCooldownMinutes",      25, 0, 240);
         ABANDONED_HOME_SIGN_COOLDOWN_MINUTES = builder.defineInRange("abandonedHomeSignCooldownMinutes",  12, 0, 240);
+        SOUNDEVENT_COOLDOWN_MINUTES          = builder.defineInRange("soundeventCooldownMinutes",         40,  0, 240);
         CASTLE_STRUCTURE_COOLDOWN_MINUTES    = builder.defineInRange("castleStructureCooldownMinutes",    30, 0, 240);
         CAMPSITE_STRUCTURE_COOLDOWN_MINUTES  = builder.defineInRange("campsiteStructureCooldownMinutes",   8, 0, 240);
         EMPTY_STRUCTURE_COOLDOWN_MINUTES     = builder.defineInRange("emptyStructureCooldownMinutes",      8, 0, 240);
