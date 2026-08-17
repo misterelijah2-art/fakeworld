@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -15,14 +16,27 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class StalkerEntity extends PathfinderMob {
+public class StalkerEntity extends PathfinderMob implements GeoEntity {
+
 	public static final double DISAPPEAR_DISTANCE = 14.0D;
 	public static final double TOO_FAR_DISTANCE = 72.0D;
-	private static final EntityDataAccessor<Optional<UUID>> TARGET_PLAYER = SynchedEntityData.defineId(StalkerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+	private static final EntityDataAccessor<Optional<UUID>> TARGET_PLAYER =
+			SynchedEntityData.defineId(StalkerEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+
+	private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("animation.stalker.idle");
+
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public StalkerEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
 		super(entityType, level);
@@ -39,6 +53,23 @@ public class StalkerEntity extends PathfinderMob {
 				.add(Attributes.FOLLOW_RANGE, TOO_FAR_DISTANCE);
 	}
 
+	// ── GeckoLib ─────────────────────────────────────────────────────────────
+
+	@Override
+	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "idle", 0, state -> {
+			state.setAnimation(IDLE);
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return cache;
+	}
+
+	// ── Target player sync ────────────────────────────────────────────────────
+
 	public void setTargetPlayer(ServerPlayer player) {
 		this.entityData.set(TARGET_PLAYER, Optional.of(player.getUUID()));
 	}
@@ -48,6 +79,8 @@ public class StalkerEntity extends PathfinderMob {
 		super.defineSynchedData();
 		this.entityData.define(TARGET_PLAYER, Optional.empty());
 	}
+
+	// ── Tick ──────────────────────────────────────────────────────────────────
 
 	@Override
 	public void tick() {
@@ -95,7 +128,9 @@ public class StalkerEntity extends PathfinderMob {
 
 	private void faceTarget(ServerPlayer player) {
 		this.lookAt(EntityAnchorArgument.Anchor.EYES, player.getEyePosition());
-		float yaw = (float) (Mth.atan2(player.getZ() - this.getZ(), player.getX() - this.getX()) * (180.0D / Math.PI)) - 90.0F;
+		float yaw = (float) (Mth.atan2(
+				player.getZ() - this.getZ(),
+				player.getX() - this.getX()) * (180.0D / Math.PI)) - 90.0F;
 		this.setYRot(yaw);
 		this.yRotO = yaw;
 		this.setYHeadRot(yaw);

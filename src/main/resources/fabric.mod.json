@@ -22,10 +22,7 @@
 			"com.example.fakeworld.client.FakeworldClient"
 		],
 		"modmenu": [
-			{
-				"adapter": "default",
-				"value": "com.example.fakeworld.client.FakeworldModMenu"
-			}
+			"com.example.fakeworld.client.FakeworldModMenu"
 		]
 	},
 	"mixins": [
